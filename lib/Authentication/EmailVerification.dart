@@ -9,8 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../main.dart';
-
 class EmailVerification extends StatefulWidget {
   String email;
   EmailVerification({Key? key, required this.email}) : super(key: key);
@@ -29,8 +27,6 @@ class _EmailVerificationState extends State<EmailVerification> {
   @override
   void initState() {
     super.initState();
-    //  show_toast = FToast();
-    // show_toast.init(context);
     isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
 
     if(!isEmailVerified){

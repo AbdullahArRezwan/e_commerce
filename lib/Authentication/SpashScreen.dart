@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'package:e_commerce/Authentication/DecisionPage.dart';
 import 'package:e_commerce/Authentication/Sign_in.dart';
+import 'package:e_commerce/Top-Screens/Screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,11 +20,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    // Timer(Duration(seconds: 3),()=>Navigator.push(context, CupertinoPageRoute(builder: (_)=>InitPage())));
-    Timer(
-        Duration(seconds: 3),
-        () => Navigator.push(
-            context, CupertinoPageRoute(builder: (_) => Sign_in())));
+    Timer(Duration(seconds: 3),()=>Navigator.push(context, CupertinoPageRoute(builder: (_) => DecisionPage())));
+    // Timer(
+    //     Duration(seconds: 3),
+    //     () => Navigator.push(context, CupertinoPageRoute(builder: (_) => Sign_in())));
     super.initState();
   }
 
@@ -56,6 +58,22 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
       ),
+
+      // body: FutureBuilder(
+      //   future: checkLoginStatus(),
+      //     builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+      //       if(snapshot.data == false){
+      //         return Sign_in();
+      //       }
+      //       if(snapshot.connectionState == ConnectionState.waiting){
+      //         return Center(
+      //           child: CircularProgressIndicator(),
+      //         );
+      //       }
+      //       return Screens();
+      //     },
+      // ),
+
       // StreamBuilder<User?>(
       //   stream: FirebaseAuth.instance.authStateChanges(),
       //   builder: (context, snapshot){

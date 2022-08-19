@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/Authentication/OTP_Screen.dart';
 import 'package:e_commerce/Constatnt/Utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,21 @@ class _Signin_via_numberState extends State<Signin_via_number> {
   FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController numberController = TextEditingController();
   late String verificationId;
+
+  sendUserDataToDB()async{
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    var  currentUser = _auth.currentUser;
+
+    CollectionReference _collectionRef = FirebaseFirestore.instance.collection("UserData");
+    return _collectionRef.doc(currentUser!.uid).set({
+      "FullName": "Enter your name",
+      "Email": "Enter your email",
+      "PhoneNumber": numberController.text.trim(),
+      "Password": "Enter your password",
+      "Address": "Enter your address",
+      "ImageUrl": "https://firebasestorage.googleapis.com/v0/b/e-shop-273fa.appspot.com/o/UserProfile%2Ficon.jpg?alt=media&token=94932f6e-c31b-465f-b4d2-0e5c8715be3f",
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +131,7 @@ class _Signin_via_numberState extends State<Signin_via_number> {
                               prefix: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
-                                  '(+88)',
+                                  '(+880)',
                                   style: TextStyle(
                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.bold,
@@ -137,47 +153,10 @@ class _Signin_via_numberState extends State<Signin_via_number> {
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () async {
-                                // await auth.verifyPhoneNumber(
-                                //     phoneNumber: numberController.text,
-                                //     verificationCompleted: (phoneAuthCredential) async {
-                                //
-                                //     },
-                                //     verificationFailed: (verificationFailed) async {
-                                //       Utils.showSnackBar(verificationFailed.message);
-                                //     },
-                                //     codeSent: (verificationId, resendingToken) async {
-                                //       setState(() {
-                                //         this.verificationId = verificationId;
-                                //       });
-                                //     },
-                                //     codeAutoRetrievalTimeout: (verificationId) async {
-                                //
-                                //     }
-                                // );
-
-                                // Navigator.of(context).push(PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => OTP(
-                                //     phone: numberController.text,
-                                // ),
-                                //   transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                //     return SlideTransition(
-                                //       position: Tween<Offset>(
-                                //         begin: const Offset(1.0, 0.0),
-                                //         end: const Offset(0.0, 0.0),
-                                //       ).animate(animation),
-                                //       child: child,
-                                //     );
-                                //   },
-                                //   transitionDuration: const Duration(seconds: 1),
-                                //   reverseTransitionDuration: const Duration(seconds: 1),
-                                //   ),
-                                // );
-                                Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => OTP(
-                                        phone: numberController.text,
-                                      countryCode: "+88",
-                                    )
-                                  )
-                                );
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OTP(
+                                  phone: numberController.text,
+                                  countryCode: "+88",
+                                )));
                               },
                               style: ButtonStyle(
                                 foregroundColor:

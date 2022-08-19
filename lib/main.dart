@@ -1,3 +1,4 @@
+import 'package:e_commerce/Firebase-Logic/CartProvider.dart';
 import 'package:e_commerce/Firebase-Logic/GoogleSignInProvider.dart';
 import 'package:e_commerce/Authentication/SpashScreen.dart';
 import 'package:e_commerce/Constatnt/Utils.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (context) => GoogleSignInProvider()),
+            ChangeNotifierProvider(create: (context) => CartProvider()),
           ],
           child: MaterialApp(
               scaffoldMessengerKey: Utils.messengerKey,

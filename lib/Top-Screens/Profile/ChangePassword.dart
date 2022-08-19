@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce/Authentication/Sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,8 +15,41 @@ class ChangePassword extends StatefulWidget {
 
 class _ChangePasswordState extends State<ChangePassword> {
   final formKey = GlobalKey<FormState>();
-  String new_pass = '';
-  String confirm_pass = '';
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
+  String newPassword = '';
+  bool _obscurePass = true;
+  bool _obscureConfirmPass = true;
+
+  final currentUser = FirebaseAuth.instance.currentUser;
+
+  @override
+  void dispose(){
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  updateData() {
+    CollectionReference _collectionRef =
+    FirebaseFirestore.instance.collection("UserData");
+    return _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      "Password": _passwordController.text.trim(),
+    });
+  }
+
+
+  Future changePassword() async {
+    try{
+      await currentUser!.updatePassword(newPassword);
+      updateData();
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Sign_in()));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Your password has been changed. Login again")));
+    } catch (e){
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +62,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         iconTheme: IconThemeData(
           color: Colors.lightBlue,
         ),
-        title: Text("E-Shop",
+        title: Text("Change Password",
           style: GoogleFonts.zenKurenaido(
             fontStyle: FontStyle.normal,
             decoration: TextDecoration.none,
@@ -41,107 +77,103 @@ class _ChangePasswordState extends State<ChangePassword> {
         child: Form(
           key: formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Change Password",
+                "Please enter your new password",
                 style: TextStyle(
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.normal,
                   color: Colors.black,
                 ),
               ),
               SizedBox(height: 30.h),
-              // TextFormField(
-              //   // autofocus: true,
-              //   keyboardType: TextInputType.text,
-              //   style: TextStyle(
-              //     fontSize: 18.sp,
-              //     fontWeight: FontWeight.normal,
-              //   ),
-              //   decoration: InputDecoration(
-              //     hintText: "Your Phone Number",
-              //     enabledBorder: OutlineInputBorder(
-              //         borderSide: BorderSide(color: Colors.lightBlue),
-              //         borderRadius: BorderRadius.circular(10.r)),
-              //     focusedBorder: OutlineInputBorder(
-              //         borderSide: BorderSide(color: Colors.lightBlue),
-              //         borderRadius: BorderRadius.circular(10.r)),
-              //     errorBorder: OutlineInputBorder(
-              //         borderSide: BorderSide(color: Colors.lightBlue),
-              //         borderRadius: BorderRadius.circular(10.r)),
-              //     prefixIcon: Padding(
-              //       padding: EdgeInsets.all(14.w),
-              //       child: Text(
-              //         "Phone",
-              //         style: TextStyle(
-              //           fontSize: 18.sp,
-              //           fontWeight: FontWeight.bold,
-              //           color: Colors.black,
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              //   validator: (value) {
-              //     final pattern = r'(^[0-9]{11}$)';
-              //     final regExp = RegExp(pattern);
-              //
-              //     if (value!.isEmpty) {
-              //       return 'Enter a phone number';
-              //     } else if (!regExp.hasMatch(value)) {
-              //       return 'Enter a valid phone number';
-              //     } else {
-              //       return null;
-              //     }
-              //   },
-              //   maxLength: 11,
-              //   onSaved: (value) => setState(() => phone = value!),
-              // ),
-              SizedBox(height: 16.h),
-              // TextFormField(
-              //   // autofocus: true,
-              //   keyboardType: TextInputType.text,
-              //   style: TextStyle(
-              //     fontSize: 18.sp,
-              //     fontWeight: FontWeight.normal,
-              //   ),
-              //   decoration: InputDecoration(
-              //     hintText: "Your Email",
-              //     enabledBorder: OutlineInputBorder(
-              //         borderSide: BorderSide(color: Colors.lightBlue),
-              //         borderRadius: BorderRadius.circular(10.r)),
-              //     focusedBorder: OutlineInputBorder(
-              //         borderSide: BorderSide(color: Colors.lightBlue),
-              //         borderRadius: BorderRadius.circular(10.r)),
-              //     errorBorder: OutlineInputBorder(
-              //         borderSide: BorderSide(color: Colors.lightBlue),
-              //         borderRadius: BorderRadius.circular(10.r)),
-              //     prefixIcon: Padding(
-              //       padding: EdgeInsets.all(14.w),
-              //       child: Text(
-              //         "Email",
-              //         style: TextStyle(
-              //           fontSize: 18.sp,
-              //           fontWeight: FontWeight.bold,
-              //           color: Colors.black,
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              //   validator: (value) {
-              //     final pattern = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-              //     final regExp = RegExp(pattern);
-              //
-              //     if (value!.isEmpty) {
-              //       return 'Enter an email';
-              //     } else if (!regExp.hasMatch(value)) {
-              //       return 'Enter a valid email';
-              //     } else {
-              //       return null;
-              //     }
-              //   },
-              //   maxLength: 30,
-              //   onSaved: (value) => setState(() => email = value!),
-              // ),
+              TextFormField(
+                controller: _passwordController,
+                autovalidateMode: AutovalidateMode.always,
+                validator: (pass) {
+                  if(RegExp(r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$").hasMatch(pass!)){
+                    return null;
+                  }
+                  else if(pass.isEmpty)
+                    {
+                      return "Please enter password";
+                    }
+                  else{
+                    return "Minimum 8 character long with special character, uppercase & lowercase\n"
+                        "letter with number";
+                  }
+                },
+                obscureText: _obscurePass,
+                decoration: InputDecoration(
+                  hintText: "New Password",
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  prefixIcon: Icon(CupertinoIcons.lock,
+                    color: Colors.lightBlue,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscurePass = !_obscurePass;
+                      });
+                    },
+                    icon: _obscurePass?Icon(Icons.visibility_off, color: Colors.lightBlue):Icon(Icons.visibility, color: Colors.lightBlue),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.lightBlue,
+                      )
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.lightBlue,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.w),
+              TextFormField(
+                autovalidateMode: AutovalidateMode.always,
+                controller: _confirmPasswordController,
+                obscureText: _obscureConfirmPass,
+                validator: (value) {
+                  if(_passwordController.text!=_confirmPasswordController.text){
+                    return "Password does not match";
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: "Confirm new Password",
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  prefixIcon: Icon(CupertinoIcons.lock,
+                    color: Colors.lightBlue,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPass = !_obscureConfirmPass;
+                      });
+                    },
+                    icon: _obscureConfirmPass?Icon(Icons.visibility_off, color: Colors.lightBlue):Icon(Icons.visibility, color: Colors.lightBlue),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.red,
+                      )
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.lightBlue,
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(height: 30.h),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.w),
@@ -151,21 +183,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                   child: ElevatedButton(
                     onPressed: () {
                       final isValid = formKey.currentState!.validate();
-                      // FocusScope.of(context).unfocus();
-
                       if (isValid) {
-                        formKey.currentState!.save();
-
-                        // final message =
-                        //     'Username: $username\nPassword: $password\nEmail: $email';
-                        // final snackBar = SnackBar(
-                        //   content: Text(
-                        //     message,
-                        //     style: TextStyle(fontSize: 20),
-                        //   ),
-                        //   backgroundColor: Colors.green,
-                        // );
-                        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        setState((){
+                          newPassword = _passwordController.text.trim();
+                        });
+                        changePassword();
                       }
                     },
                     style: ButtonStyle(
