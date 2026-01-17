@@ -1,16 +1,83 @@
-# e_commerce
+# 🛒 E-Commerce Mobile Application (Flutter)
 
-A new Flutter project.
+A full-featured **E-Commerce mobile application** built with **Flutter**, offering user authentication, product browsing, category-based shopping, wishlist management, and user profile features. The project follows a modular and scalable architecture suitable for real-world applications.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📱 Features
 
-A few resources to get you started if this is your first Flutter project:
+### 🔐 Authentication & User Management
+- User Sign Up & Sign In
+- Email and Phone Number Login (OTP-based)
+- Email Verification
+- Password Reset & Change Password
+- Splash Screen with Auth Decision Flow
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### 🛍️ Shopping Experience
+- Category-wise product listing
+- Product details view
+- Wishlist functionality
+- Order history tracking
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 👤 Profile Management
+- View & edit profile
+- Order history
+- Wishlist
+- Secure password change
+
+### 🧾 Product Categories
+- Men’s Fashion  
+- Women’s Fashion  
+- Kids  
+- Accessories  
+- Unstitched Prints  
+- Sweaters & Tops  
+
+---
+
+## 🏗️ Project Structure
+
+---lib/
+├── main.dart
+├── routes.dart
+├── Authentication/
+│ ├── Sign_in.dart
+│ ├── Sign_up.dart
+│ ├── OTP_Screen.dart
+│ ├── ResetPassword.dart
+│ └── ...
+├── Constatnt/
+│ ├── BottomBar.dart
+│ ├── CategoryItems.dart
+│ └── ...
+├── HomeScreen/
+│ ├── HomeScreen.dart
+│ ├── ProductDetails.dart
+├── Profile/
+│ ├── Profile.dart
+│ ├── Edit_profile.dart
+│ ├── OrderHistory.dart
+│ └── WishList.dart
+
+## 🧰 Tech Stack
+
+| Technology | Description |
+|----------|-------------|
+| Flutter | Cross-platform mobile framework |
+| Dart | Programming language |
+| Firebase | Authentication & backend services |
+| Material UI | UI components |
+| Android SDK | Android build support |
+
+---
+
+## 🔥 Firebase Integration
+
+Firebase is used for:
+- User authentication
+- Email verification
+- OTP-based login
+
+Firebase config file:
+
+
