@@ -1,4 +1,4 @@
-# 🛒 E-Commerce Mobile Application (Flutter)
+# 🛒 E-Shop (E-Commerce Mobile Application using Flutter)
 
 A full-featured **E-Commerce mobile application** built with **Flutter**, offering user authentication, product browsing, category-based shopping, wishlist management, and user profile features. The project follows a modular and scalable architecture suitable for real-world applications.
 
